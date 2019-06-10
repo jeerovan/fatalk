@@ -243,6 +243,7 @@ public class AppPreferences {
         AppPreferences.unset(Keys.answerThree);
         AppPreferences.unset(Keys.answerFour);
         AppPreferences.unset(Keys.userBio);
+        clearInternal();
     }
     public static void initialize() {
         CountriesName.add("Afghanistan");
@@ -671,17 +672,5 @@ public class AppPreferences {
 
     public static long getGeneralRequestTimeoutMillis() {
         return getLong(Keys.generalRequestTimeoutMillis,5000);
-    }
-    public static void addMissedCall(String from) {
-        List<String> missedFroms = new ArrayList<>(Arrays.asList(getString("missed_calls","").split("\n")));
-        if (!missedFroms.contains(from)) {
-            missedFroms.add(from);
-        }
-        setString("missed_calls", TextUtils.join("\n", missedFroms));
-    }
-    public static void removeMissedCall(String from) {
-        List<String> missedFroms = new ArrayList<>(Arrays.asList(getString("missed_calls","").split("\n")));
-        missedFroms.remove(from);
-        setString("missed_calls", TextUtils.join("\n", missedFroms));
     }
 }

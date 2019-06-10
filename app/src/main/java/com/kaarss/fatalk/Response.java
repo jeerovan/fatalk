@@ -25,7 +25,7 @@ public class Response {
                     String userId = message.getString(Keys.userId);
                     AppPreferences.setString(Keys.userId,userId);
                     // ---- Set Defaults -----
-                    AppPreferences.setInt(Keys.userState,1);
+                    AppPreferences.setInt(Keys.userState,1); // set security
                     AppPreferences.setString(Keys.securityState,Keys.settingSecurity);
                 }
                 break;

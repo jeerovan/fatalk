@@ -143,7 +143,7 @@ public class SetProfileActivity extends AppCompatActivity implements View.OnClic
                     AppPreferences.setInt(Keys.userGender,_gender);
                     AppPreferences.setInt(Keys.userAge,age);
                     AppPreferences.setString(Keys.userBio,bio);
-                    AppPreferences.setInt(Keys.userState,3);
+                    AppPreferences.setInt(Keys.userState,3); // profile complete
                     if (dummyImageId > 0) {
                         AppPreferences.setInt(userId + "_dummy_image_id", dummyImageId);
                     }

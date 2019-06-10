@@ -123,8 +123,13 @@ public class SecurityQuestionsActivity extends AppCompatActivity {
         } else if(_at.equals(Keys.answerFour)){
             if(_state.equals(Keys.settingSecurity)){
                 Request.setSecurity();
-                AppPreferences.setInt(Keys.userState,2);
-                startActivity(new Intent(this, SetProfileActivity.class));
+                int userState = AppPreferences.getInt(Keys.userState,0);
+                if(userState < 2) {
+                    AppPreferences.setInt(Keys.userState, 2); // Set Profile
+                    startActivity(new Intent(this, SetProfileActivity.class));
+                } else {
+                    startActivity(new Intent(this, ContactsActivity.class));
+                }
                 finish();
             } else if(_state.equals(Keys.verifyingSecurity)){
                 Request.verifySecurity();
