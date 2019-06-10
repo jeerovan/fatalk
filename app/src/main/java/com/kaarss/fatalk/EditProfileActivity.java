@@ -107,7 +107,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 startActivity(new Intent(this,PasswordActivity.class));
                 break;
             case R.id.logout:
-                App.clearTable("messages");
+                App.clearDatabase();
                 AppPreferences.unsetUser();
                 startActivity(new Intent(this,SignInUpActivity.class));
                 finish();

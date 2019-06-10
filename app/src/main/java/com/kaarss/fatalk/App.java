@@ -363,6 +363,10 @@ public class App extends Application implements LifecycleObserver {
                 case "profiles":
                     userProfileDao.clearTable();
                     break;
+                case "messages":
+                    chatMessageDao.clearTable();
+                case "tasks":
+                    taskDao.clearTable();
             }
             return null;
         }
@@ -374,6 +378,8 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(Void... params) {
             userProfileDao.clearTable();
+            taskDao.clearTable();
+            chatMessageDao.clearTable();
             return null;
         }
     }
