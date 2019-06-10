@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY appname "Fatalk">]>
+<resources>
+    <string name="app_name">&appname;</string>
+    <string name="iagree">By continuing, you agree to the <a href="https://sites.google.com/view/fatalk-terms">Terms Of Service</a> \nAnd acknowledge the <a href="https://sites.google.com/view/fatalk-privacy">Privacy Policy</a></string>
+    <string name="permission">"Built upon Firebase Cloud Messaging, Fatalk demonstrate chat communication in real-time. It supports text,image,gif,audio and video messages.\n\nYou can access the full code at : <a href="https://github.com/jeerovan/fatalk">Fatalk Android</a> \nAnd the backend code at : <a href="https://github.com/jeerovan/firebase_xmpp">Fatalk Backend</a>. You can find these links in App Full Description on PlayStore. \n\nFatalk is anonymous but the Messages in Fatalk are NOT end-to-end encrypted which makes it NOT suitable for any personal usage.</string>
+    <string name="no_messages">No Messages</string>
+</resources>

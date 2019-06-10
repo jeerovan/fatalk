@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5sp">
+
+    <FrameLayout
+        android:id="@+id/dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/user_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/male3"
+            app:civ_border_width="0sp"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="4dp" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/user_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5sp"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="5sp"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5sp"
+                android:layout_marginLeft="5sp"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="A Very Very Very Long User Name"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2sp"
+                android:paddingRight="2sp"
+                android:text="Age"
+                android:textColor="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Country"
+                android:textColor="@color/colorAccent" />
+
+            <FrameLayout
+                android:id="@+id/gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/f"
+                    android:layout_width="30sp"
+                    android:layout_height="20sp"
+                    android:layout_gravity="center_horizontal"
+                    app:srcCompat="@drawable/genderf" />
+
+                <ImageView
+                    android:id="@+id/m"
+                    android:layout_width="30sp"
+                    android:layout_height="20sp"
+                    android:layout_gravity="center_horizontal"
+                    app:srcCompat="@drawable/genderm" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/unread_count"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:layout_margin="2sp"
+                android:background="@drawable/badge_background"
+                android:gravity="center"
+                android:text="99"
+                android:textColor="@color/colorAccent" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:minHeight="50sp"
+            android:paddingLeft="4sp"
+            android:paddingRight="4sp"
+            android:text="p G 5 6 z 6 Z f 3 K S C R L N q 8 v N a e L K I r u z 1 L U Z F g M i 1 9 8 w 0 z V 3 V U i S 7 4 O T 2 T D 3 D y i k c M l 3 M k q 8 d d S X P 8 m z "
+            android:textColor="@color/colorAccent"
+            app:fontFamily="@font/roboto_thin" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.kaarss.fatalk"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 100001
+        versionName "1.0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "fcm_sender_id", "643491502021@gcm.googleapis.com"
+        }
+        debug {
+            resValue "string", "fcm_sender_id", "25127001499@gcm.googleapis.com"
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    //For Debugging Purposes. Remove it later
+    implementation "com.facebook.stetho:stetho:1.5.0"
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    androidTestImplementation "android.arch.persistence.room:testing:1.0.0"
+    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    //circular progress bar
+    implementation "com.github.antonKozyriatskyi:CircularProgressIndicator:1.0.5"
+    // Lifecycle components
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    implementation "de.hdodenhof:circleimageview:2.2.0"
+    implementation "org.greenrobot:eventbus:3.1.1"
+    implementation "com.google.firebase:firebase-core:16.0.9"
+    implementation "com.google.firebase:firebase-messaging:18.0.0"
+
+    implementation "com.android.support:design:28.0.0"
+    implementation "com.android.support:support-v4:28.0.0"
+
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "com.android.support:support-dynamic-animation:28.0.0"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+}
+apply plugin: 'com.google.gms.google-services'

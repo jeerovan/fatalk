@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kaarss.fatalk">
+
+    <!-- NORMAL PERMISSION -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <activity android:name=".ChatActivity"></activity>
+        <activity
+            android:name=".StartActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ContactsActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".TermsActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".SignInUpActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".CountryCodeActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".SecurityQuestionsActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".SetProfileActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".PasswordActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".EditProfileActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".ViewProfileActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".EditBioActivity"
+            android:launchMode="singleInstance" />
+
+        <service
+            android:name=".FirebaseService"
+            android:enabled="true"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="firebase_analytics_collection_deactivated"
+            android:value="true" />
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+    </application>
+
+</manifest>
