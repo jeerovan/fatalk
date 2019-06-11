@@ -73,9 +73,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         _username.setText(AppPreferences.getString(Keys.userName,""));
         _country.setText(AppPreferences.getString(Keys.country,""));
         if(AppPreferences.getInt(Keys.userGender,0) == 0){
-            _female.setVisibility(View.GONE);
-        } else {
             _male.setVisibility(View.GONE);
+        } else {
+            _female.setVisibility(View.GONE);
         }
         _age.setText(AppPreferences.getInt(Keys.userAge,0)+ " Yr");
         _profileImage.setImageBitmap(App.getUserImage(AppPreferences.getString(Keys.userId,""),

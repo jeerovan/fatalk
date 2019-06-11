@@ -27,12 +27,6 @@ public class TimeUtils {
         return df.format(time);
     }
 
-    public static String toDashAMPM(long msecs) {
-        long time = new Date(msecs).getTime();
-        SimpleDateFormat df = new SimpleDateFormat("h-mm-a", Locale.ENGLISH);
-        return df.format(time);
-    }
-
     public static String toReadable(long msecs) {
         Date today = new Date();
         String todayDate = getDateOnlyString(today.getTime());
