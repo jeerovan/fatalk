@@ -1,6 +1,6 @@
 package com.kaarss.fatalk;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import android.text.TextUtils;
 
 import java.util.Map;

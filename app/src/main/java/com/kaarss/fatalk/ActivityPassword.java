@@ -1,13 +1,13 @@
 package com.kaarss.fatalk;
 
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-public class PasswordActivity extends AppCompatActivity {
-    private static final String TAG = PasswordActivity.class.getSimpleName();
+public class ActivityPassword extends AppCompatActivity {
+    private static final String TAG = ActivityPassword.class.getSimpleName();
 
     TextInputEditText _password;
     Button _submit;

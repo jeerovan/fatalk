@@ -2,8 +2,10 @@ package com.kaarss.fatalk;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by jeevansingh on 01/01/18.
@@ -57,5 +59,9 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return millis;
+    }
+    public static long utcSeconds() {
+        return Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                .getTimeInMillis() / 1000;
     }
 }

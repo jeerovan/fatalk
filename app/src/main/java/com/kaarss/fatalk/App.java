@@ -1,10 +1,11 @@
 package com.kaarss.fatalk;
 
+import android.Manifest;
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.OnLifecycleEvent;
-import android.arch.lifecycle.ProcessLifecycleOwner;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -42,12 +43,15 @@ public class App extends Application implements LifecycleObserver {
     private static final String TAG = "Application";
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
+    public static final String[] READ_WRITE_PERMISSIONS = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     // ----------- Shared Preferences -----
     public static SharedPreferences sharedPref;
     // ------ DB Daos ----
-    public static UserProfileDao userProfileDao;
-    public static TaskDao taskDao;
-    public static ChatMessageDao chatMessageDao;
+    public static DaoUserProfile daoUserProfile;
+    public static DaoTask daoTask;
+    public static DaoChatMessage daoChatMessage;
 
     public static Context applicationContext;
 
@@ -68,9 +72,9 @@ public class App extends Application implements LifecycleObserver {
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         // --- Db Daos ---
         LocalDatabase db = LocalDatabase.getDatabase(applicationContext);
-        userProfileDao = db.userProfileDao();
-        taskDao = db.taskDao();
-        chatMessageDao = db.chatMessageDao();
+        daoUserProfile = db.userProfileDao();
+        daoTask = db.taskDao();
+        daoChatMessage = db.chatMessageDao();
 
         if (BuildConfig.DEBUG) {
             //Initialize stetho, debugging library
@@ -120,7 +124,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... strings) {
             String messageId = strings[0];
-            List<ChatMessage> chatMessages = chatMessageDao.getMessage(messageId);
+            List<ChatMessage> chatMessages = daoChatMessage.getMessage(messageId);
             if(chatMessages.size() > 0){
                 ChatMessage chatMessage = chatMessages.get(0);
                 Request.sendChatMessage(chatMessage);
@@ -134,7 +138,7 @@ public class App extends Application implements LifecycleObserver {
     private static class checkPendingMediaUploads extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            List<ChatMessage> pendingUploads = chatMessageDao.getMediaMessagesToUpload();
+            List<ChatMessage> pendingUploads = daoChatMessage.getMediaMessagesToUpload();
             if(pendingUploads.size() > 0) {
                 ChatMessage chatMessage = pendingUploads.get(0);
                 Request.getS3ParamsForMedia(chatMessage.getMessageId());
@@ -155,7 +159,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(Object... objects) {
             String messageId = (String)objects[0];
             int messageType = (int)objects[1];
-            chatMessageDao.setMediaDownloading(messageId);
+            daoChatMessage.setMediaDownloading(messageId);
             if(downloadFile(messageId)){
                 // --- Create Preview Image -----
                 File mediaFile = FileUtils.getMediaFile(messageId);
@@ -190,10 +194,10 @@ public class App extends Application implements LifecycleObserver {
                     }
                 }
                 // --- Signal Database to reflect the change in UI ------
-                chatMessageDao.setMediaDownloaded(messageId);
+                daoChatMessage.setMediaDownloaded(messageId);
                 Request.messageDownloaded(messageId);
             } else {
-                chatMessageDao.setMediaDownloadFailed(messageId);
+                daoChatMessage.setMediaDownloadFailed(messageId);
             }
             return null;
         }
@@ -319,7 +323,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(Object... objects) {
             String messageId = (String)objects[0];
             String mediaParams = (String)objects[1];
-            List<ChatMessage> chatMessages = App.chatMessageDao.getMessage(messageId);
+            List<ChatMessage> chatMessages = App.daoChatMessage.getMessage(messageId);
             if(chatMessages.size() > 0){
                 ChatMessage chatMessage =  chatMessages.get(0);
                 int mediaUploadStatus = chatMessage.getMediaUploadStatus();
@@ -340,7 +344,7 @@ public class App extends Application implements LifecycleObserver {
                     }
                     try {
                         AppLog.i(TAG,"Uploading:"+messageId+"|Type:Media");
-                        App.chatMessageDao.setMediaUploading(messageId);
+                        App.daoChatMessage.setMediaUploading(messageId);
                         new FileUpload(messageId,Keys.mediaTypeFile,mediaFileBytes,new JSONObject(mediaParams)).start();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -361,12 +365,12 @@ public class App extends Application implements LifecycleObserver {
             String table = params[0];
             switch (table){
                 case "profiles":
-                    userProfileDao.clearTable();
+                    daoUserProfile.clearTable();
                     break;
                 case "messages":
-                    chatMessageDao.clearTable();
+                    daoChatMessage.clearTable();
                 case "tasks":
-                    taskDao.clearTable();
+                    daoTask.clearTable();
             }
             return null;
         }
@@ -377,9 +381,9 @@ public class App extends Application implements LifecycleObserver {
     private static class clearDatabase extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            userProfileDao.clearTable();
-            taskDao.clearTable();
-            chatMessageDao.clearTable();
+            daoUserProfile.clearTable();
+            daoTask.clearTable();
+            daoChatMessage.clearTable();
             return null;
         }
     }
@@ -391,7 +395,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(UserProfile... params) {
             UserProfile newProfile = params[0];
             String userId = newProfile.getUserId();
-            List<UserProfile> oldProfiles = userProfileDao.getProfile(userId);
+            List<UserProfile> oldProfiles = daoUserProfile.getProfile(userId);
             if(oldProfiles.size() > 0){
                 UserProfile oldProfile = oldProfiles.get(0);
                 if(newProfile.getDpVersion() > 0){
@@ -402,7 +406,7 @@ public class App extends Application implements LifecycleObserver {
             } else{
                 if(newProfile.getDpVersion() > 0)handler.post(new imageDownloadTask(userId));
             }
-            userProfileDao.insertProfile(newProfile);
+            daoUserProfile.insertProfile(newProfile);
             return null;
         }
     }
@@ -411,7 +415,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Object doInBackground(String... params) {
             String userId = params[0];
-            List<UserProfile> profiles = userProfileDao.getProfile(userId);
+            List<UserProfile> profiles = daoUserProfile.getProfile(userId);
             UserProfile profile = null;
             if (profiles.size() > 0) {
                 profile = profiles.get(0);
@@ -433,13 +437,13 @@ public class App extends Application implements LifecycleObserver {
             int dpVersion = (int)params[1];
             String bio = (String)params[2];
             long bioChangedAt = (long)params[3];
-            List<UserProfile> profiles = userProfileDao.getProfile(userId);
+            List<UserProfile> profiles = daoUserProfile.getProfile(userId);
             if(profiles.size() > 0){
                 UserProfile profile = profiles.get(0);
                 if(dpVersion > profile.getDpVersion()){
                     handler.post(new imageDownloadTask(userId));
                 }
-                userProfileDao.setProfileDpBio(userId,dpVersion,bio,bioChangedAt);
+                daoUserProfile.setProfileDpBio(userId,dpVersion,bio,bioChangedAt);
             }
             return null;
         }
@@ -451,7 +455,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... params){
             String uid = params[0];
-            userProfileDao.deleteProfile(uid);
+            daoUserProfile.deleteProfile(uid);
             applicationContext.deleteFile(uid);
             return null;
         }
@@ -461,7 +465,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... params){
             String uid = params[0];
-            userProfileDao.updateLastContactedAt(uid,System.currentTimeMillis());
+            daoUserProfile.updateLastContactedAt(uid,System.currentTimeMillis());
             return null;
         }
     }
@@ -471,7 +475,7 @@ public class App extends Application implements LifecycleObserver {
     private static class updateProfiles extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void... params){
-            List<String> items = userProfileDao.getAllProfiles();
+            List<String> items = daoUserProfile.getAllProfiles();
             int totalItems = items.size();
             // -- Break The String To Accommodate 4KB Payload ----
             if(totalItems > 300){
@@ -493,7 +497,7 @@ public class App extends Application implements LifecycleObserver {
     private static class removeNonChatUsers extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void... voids) {
-            userProfileDao.removeNonChatUsers();
+            daoUserProfile.removeNonChatUsers();
             return null;
         }
     }
@@ -505,7 +509,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(Task... params) {
             Task newTask = params[0];
-            taskDao.insertTask(newTask);
+            daoTask.insertTask(newTask);
             return null;
         }
     }
@@ -516,7 +520,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... params){
             String taskId = params[0];
-            taskDao.deleteTask(taskId);
+            daoTask.deleteTask(taskId);
             return null;
         }
     }
@@ -527,7 +531,7 @@ public class App extends Application implements LifecycleObserver {
     private static class sendPendingTasks extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void... params){
-            List<Task> tasks = taskDao.getTasks();
+            List<Task> tasks = daoTask.getTasks();
             for(Task task : tasks){
                 String message = task.getData();
                 FirebaseService.sendMessage(message);
@@ -543,12 +547,12 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(ChatMessage... params) {
             ChatMessage message = params[0];
-            List<ChatMessage> messages = chatMessageDao.getMessage(message.getMessageId());
+            List<ChatMessage> messages = daoChatMessage.getMessage(message.getMessageId());
             if(messages.size() == 0){
-                chatMessageDao.insertMessage(message);
+                daoChatMessage.insertMessage(message);
                 String dateString = TimeUtils.getDateOnlyString(message.getAddedAt()*1000);
                 String dateId = message.getUserId()+dateString;
-                int exist = chatMessageDao.getDateEntry(dateId);
+                int exist = daoChatMessage.getDateEntry(dateId);
                 if(exist == 0){
                     long dateTime = TimeUtils.getMillisFromDate(dateString)/1000;
                     ChatMessage dateMessage = new ChatMessage(dateId,
@@ -563,7 +567,7 @@ public class App extends Application implements LifecycleObserver {
                             "",
                             Keys.mediaStatusNA,
                             Keys.mediaStatusNA);
-                    chatMessageDao.insertMessage(dateMessage);
+                    daoChatMessage.insertMessage(dateMessage);
                 }
                 if(!message.isMine()){
                     Request.chatMessageDeliveredAt(message.getUserId(),message.getMessageId(),System.currentTimeMillis()/1000);
@@ -577,7 +581,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... params) {
             String mid = (String) params[0];
-            chatMessageDao.deleteMessage(mid);
+            daoChatMessage.deleteMessage(mid);
             return null;
         }
     }
@@ -586,7 +590,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... params) {
             String uid = (String) params[0];
-            chatMessageDao.setMessagesRead(uid);
+            daoChatMessage.setMessagesRead(uid);
             return null;
         }
     }
@@ -598,7 +602,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(Object... params) {
             String messageId = (String) params[0];
             long timeStamp = (long) params[1];
-            chatMessageDao.setChatSentAt(messageId,timeStamp);
+            daoChatMessage.setChatSentAt(messageId,timeStamp);
             return null;
         }
     }
@@ -610,7 +614,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(Object... params) {
             String messageId = (String) params[0];
             long timeStamp = (long) params[1];
-            chatMessageDao.setChatDeliveredAt(messageId,timeStamp);
+            daoChatMessage.setChatDeliveredAt(messageId,timeStamp);
             return null;
         }
     }
@@ -622,7 +626,7 @@ public class App extends Application implements LifecycleObserver {
         protected Void doInBackground(Object... params) {
             String messageId = (String) params[0];
             long timeStamp = (long) params[1];
-            chatMessageDao.setChatReadByAt(messageId,timeStamp);
+            daoChatMessage.setChatReadByAt(messageId,timeStamp);
             return null;
         }
     }
@@ -630,7 +634,7 @@ public class App extends Application implements LifecycleObserver {
     private static class resetMediaUploadsInProgress extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void...params){
-            chatMessageDao.resetMediaUploadsInProgress();
+            daoChatMessage.resetMediaUploadsInProgress();
             return null;
         }
     }
@@ -638,7 +642,7 @@ public class App extends Application implements LifecycleObserver {
     private static class resetMediaDownloadsInProgress extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void...params){
-            chatMessageDao.resetMediaDownloadsInProgress();
+            daoChatMessage.resetMediaDownloadsInProgress();
             return null;
         }
     }
@@ -649,7 +653,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... objects) {
             String messageId = (String)objects[0];
-            chatMessageDao.setMediaUploaded(messageId);
+            daoChatMessage.setMediaUploaded(messageId);
             return null;
         }
     }
@@ -660,7 +664,7 @@ public class App extends Application implements LifecycleObserver {
         @Override
         protected Void doInBackground(String... objects) {
             String messageId = (String)objects[0];
-            chatMessageDao.setMediaUploadFailed(messageId);
+            daoChatMessage.setMediaUploadFailed(messageId);
             return null;
         }
     }

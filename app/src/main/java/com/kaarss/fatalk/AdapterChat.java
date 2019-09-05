@@ -3,9 +3,9 @@ package com.kaarss.fatalk;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +19,9 @@ import java.util.List;
 
 import static android.view.View.GONE;
 
-public class ChatAdapter extends RecyclerView.Adapter {
+public class AdapterChat extends RecyclerView.Adapter {
 
-    private static String TAG = ChatAdapter.class.getSimpleName();
+    private static String TAG = AdapterChat.class.getSimpleName();
 
     private static final int VIEW_TYPE_DATE = 100;
 
@@ -47,7 +47,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<ChatMessage> mMessageList;
 
-    public ChatAdapter(Context context) {
+    public AdapterChat(Context context) {
         mContext = context;
     }
 
@@ -121,10 +121,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
             case VIEW_TYPE_VIDEO_RECEIVED:
             case VIEW_TYPE_DOCUMENT_RECEIVED:
                 ImageView receivingPreview = view.findViewById(R.id.preview);
-                receivingPreview.setOnClickListener(ChatActivity.chatItemClickListener);
-                receivingPreview.setOnLongClickListener(ChatActivity.chatItemLongClickListener);
+                receivingPreview.setOnClickListener(ActivityChat.chatItemClickListener);
+                receivingPreview.setOnLongClickListener(ActivityChat.chatItemLongClickListener);
                 FrameLayout receivingTransferProgress = view.findViewById(R.id.transfer_progress);
-                receivingTransferProgress.setOnClickListener(ChatActivity.chatItemClickListener);
+                receivingTransferProgress.setOnClickListener(ActivityChat.chatItemClickListener);
                 viewHolder = new ReceivingViewHolderForDownloads(view);
                 break;
             case VIEW_TYPE_MESSAGE_SENT:
@@ -136,10 +136,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
             case VIEW_TYPE_VIDEO_SENT:
             case VIEW_TYPE_DOCUMENT_SENT:
                 ImageView sendingPreview = view.findViewById(R.id.preview);
-                sendingPreview.setOnClickListener(ChatActivity.chatItemClickListener);
-                sendingPreview.setOnLongClickListener(ChatActivity.chatItemLongClickListener);
+                sendingPreview.setOnClickListener(ActivityChat.chatItemClickListener);
+                sendingPreview.setOnLongClickListener(ActivityChat.chatItemLongClickListener);
                 FrameLayout sendingTransferProgress = view.findViewById(R.id.transfer_progress);
-                sendingTransferProgress.setOnClickListener(ChatActivity.chatItemClickListener);
+                sendingTransferProgress.setOnClickListener(ActivityChat.chatItemClickListener);
                 viewHolder = new SendingViewHolderForUploads(view);
                 break;
         }

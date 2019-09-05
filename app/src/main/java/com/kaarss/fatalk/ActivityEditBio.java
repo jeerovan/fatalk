@@ -3,7 +3,7 @@ package com.kaarss.fatalk;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class EditBioActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final String TAG = EditBioActivity.class.getSimpleName();
+public class ActivityEditBio extends AppCompatActivity implements View.OnClickListener{
+    private static final String TAG = ActivityEditBio.class.getSimpleName();
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     EditText _bio;

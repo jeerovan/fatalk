@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/activity"
-    tools:context=".EditBioActivity">
+    tools:context=".ActivityEditBio">
 
     <FrameLayout
         android:layout_width="match_parent"

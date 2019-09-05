@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -21,9 +21,9 @@ import org.json.JSONObject;
 /*  states _at : question
     one, two , three, four
  */
-public class SecurityQuestionsActivity extends AppCompatActivity {
+public class ActivitySecurityQuestions extends AppCompatActivity {
 
-    private static final String TAG = SecurityQuestionsActivity.class.getSimpleName();
+    private static final String TAG = ActivitySecurityQuestions.class.getSimpleName();
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     private TextView _question;
@@ -126,9 +126,9 @@ public class SecurityQuestionsActivity extends AppCompatActivity {
                 int userState = AppPreferences.getInt(Keys.userState,0);
                 if(userState < 2) {
                     AppPreferences.setInt(Keys.userState, 2); // Set Profile
-                    startActivity(new Intent(this, SetProfileActivity.class));
+                    startActivity(new Intent(this, ActivitySetProfile.class));
                 } else {
-                    startActivity(new Intent(this, ContactsActivity.class));
+                    startActivity(new Intent(this, ActivityContacts.class));
                 }
                 finish();
             } else if(_state.equals(Keys.verifyingSecurity)){
@@ -161,16 +161,16 @@ public class SecurityQuestionsActivity extends AppCompatActivity {
                 if(rsFive == 1){
                     int userState = message.getInt(Keys.userState);
                     if(userState == 2){
-                        startActivity(new Intent(this,SetProfileActivity.class));
+                        startActivity(new Intent(this, ActivitySetProfile.class));
                     } else {
-                        startActivity(new Intent(this, ContactsActivity.class));
+                        startActivity(new Intent(this, ActivityContacts.class));
                     }
                     finish();
                 } else {
                     String error = message.getString(Keys.responseError);
                     AppPreferences.unsetUser();
                     Toast.makeText(this,error,Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(this,SignInUpActivity.class));
+                    startActivity(new Intent(this, ActivitySignInUp.class));
                     finish();
                 }
                 break;

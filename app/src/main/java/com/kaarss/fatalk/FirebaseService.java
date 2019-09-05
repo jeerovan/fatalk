@@ -11,8 +11,8 @@ import android.content.pm.ResolveInfo;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.res.ResourcesCompat;
 import android.text.TextUtils;
 
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -58,7 +58,7 @@ public class FirebaseService extends FirebaseMessagingService {
 
     public static void showGeneralNotification(String title, String message) {
         createNotificationChannel(NOTIFICATION_CHANNEL);
-        Intent intent = new Intent(App.applicationContext, StartActivity.class);
+        Intent intent = new Intent(App.applicationContext, ActivityStart.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         showNotification(generalNotificationId, NOTIFICATION_CHANNEL, title, message, intent, true, true, false);
     }

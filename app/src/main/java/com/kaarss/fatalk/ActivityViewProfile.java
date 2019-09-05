@@ -2,15 +2,15 @@ package com.kaarss.fatalk;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ViewProfileActivity extends AppCompatActivity implements DbResponse{
-    private static final String TAG = ViewProfileActivity.class.getSimpleName();
+public class ActivityViewProfile extends AppCompatActivity implements DbResponse{
+    private static final String TAG = ActivityViewProfile.class.getSimpleName();
 
     String userId;
     String userName;

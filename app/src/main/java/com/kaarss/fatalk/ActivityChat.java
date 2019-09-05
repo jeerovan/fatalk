@@ -13,9 +13,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.OpenableColumns;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -43,9 +43,9 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener{
+public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
 
-    private static final String TAG = ChatActivity.class.getSimpleName();
+    private static final String TAG = ActivityChat.class.getSimpleName();
     private static final Handler handler = new Handler(Looper.getMainLooper());
     private final int FILE_SELECT_CODE = 2385;
 
@@ -106,15 +106,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         chatItemClickListener = new ChatItemClickListener();
         chatItemLongClickListener = new ChatItemLongClickListener();
 
-        final ChatAdapter chatAdapter = new ChatAdapter(this);
+        final AdapterChat adapterChat = new AdapterChat(this);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recycler.setLayoutManager(linearLayoutManager);
-        recycler.setAdapter(chatAdapter);
+        recycler.setAdapter(adapterChat);
         recycler.setItemAnimator(null);
 
-        App.chatMessageDao.getMessages(userId).observe(this,(chatMessages -> {
+        App.daoChatMessage.getMessages(userId).observe(this,(chatMessages -> {
             assert chatMessages != null;
             if(chatMessages.size() == 0){
                 _noChats.setVisibility(View.VISIBLE);
@@ -122,7 +122,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 _noChats.setVisibility(View.GONE);
             }
             App.setMessagesRead(userId);
-            chatAdapter.setMessages(chatMessages);
+            adapterChat.setMessages(chatMessages);
         }));
     }
     @Override
@@ -357,7 +357,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Void doInBackground(String... strings) {
             String messageId = strings[0];
-            List<ChatMessage> chatMessages = App.chatMessageDao.getMessage(messageId);
+            List<ChatMessage> chatMessages = App.daoChatMessage.getMessage(messageId);
             if(chatMessages.size() > 0){
                 ChatMessage chatMessage = chatMessages.get(0);
                 AppLog.e(TAG,"Show Long Click Option For:"+chatMessage.getMessageId());
@@ -370,7 +370,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Void doInBackground(String... strings) {
             String messageId = strings[0];
-            List<ChatMessage> chatMessages = App.chatMessageDao.getMessage(messageId);
+            List<ChatMessage> chatMessages = App.daoChatMessage.getMessage(messageId);
             if(chatMessages.size() > 0){
                 ChatMessage chatMessage = chatMessages.get(0);
                 if(chatMessage.getMediaDownloadStatus() < Keys.mediaDownloaded || chatMessage.getMediaUploadStatus() < Keys.mediaUploaded){
@@ -392,7 +392,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Void doInBackground(String... strings) {
             String messageId = strings[0];
-            List<ChatMessage> chatMessages = App.chatMessageDao.getMessage(messageId);
+            List<ChatMessage> chatMessages = App.daoChatMessage.getMessage(messageId);
             if(chatMessages.size() > 0){
                 ChatMessage chatMessage = chatMessages.get(0);
                 if(chatMessage.isMine()){

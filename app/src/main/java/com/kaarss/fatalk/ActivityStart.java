@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class StartActivity extends AppCompatActivity implements SharedPreferences
+public class ActivityStart extends AppCompatActivity implements SharedPreferences
         .OnSharedPreferenceChangeListener {
-    private static final String TAG = StartActivity.class.getSimpleName();
+    private static final String TAG = ActivityStart.class.getSimpleName();
     private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
@@ -47,15 +47,15 @@ public class StartActivity extends AppCompatActivity implements SharedPreference
         String userId = AppPreferences.getString(Keys.userId,"");
         int userState = AppPreferences.getInt(Keys.userState,0);
         if(!termsAccepted){
-            startActivity(new Intent(this,TermsActivity.class));
+            startActivity(new Intent(this, ActivityTerms.class));
         } else if(userId.isEmpty() || userState == 0) {
-            startActivity(new Intent(this, SignInUpActivity.class));
+            startActivity(new Intent(this, ActivitySignInUp.class));
         } else if(userState == 1){
-            startActivity(new Intent(this, SecurityQuestionsActivity.class));
+            startActivity(new Intent(this, ActivitySecurityQuestions.class));
         } else if(userState == 2){
-            startActivity(new Intent(this, SetProfileActivity.class));
+            startActivity(new Intent(this, ActivitySetProfile.class));
         } else {
-            startActivity(new Intent(this, ContactsActivity.class));
+            startActivity(new Intent(this, ActivityContacts.class));
         }
         finish();
     }

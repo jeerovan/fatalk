@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -27,9 +27,9 @@ import java.io.ByteArrayOutputStream;
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SetProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ActivitySetProfile extends ActivityBase implements View.OnClickListener {
 
-    private static final String TAG = SetProfileActivity.class.getSimpleName();
+    private static final String TAG = ActivitySetProfile.class.getSimpleName();
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     RadioButton _genderm;
@@ -52,6 +52,7 @@ public class SetProfileActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.initialize(true,App.READ_WRITE_PERMISSIONS);
         setContentView(R.layout.activity_set_profile);
 
         _genderm = findViewById(R.id.radiom);
@@ -100,13 +101,6 @@ public class SetProfileActivity extends AppCompatActivity implements View.OnClic
         Request.getS3ParamsForDp();
         // ---- Now We Have User Id, Fetch Active Contacts ---
         Request.getAppData();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -130,7 +124,12 @@ public class SetProfileActivity extends AppCompatActivity implements View.OnClic
                     _bio.setError("Please Write A Few Words");
                     return;
                 } else {
-                    int age = Integer.parseInt(ageText);
+                    int age = 0;
+                    try{
+                        age = Integer.parseInt(ageText);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                     if(age < 15 || age > 90) {
                         _age.setError("Enter Valid Age");
                         return;
@@ -147,7 +146,7 @@ public class SetProfileActivity extends AppCompatActivity implements View.OnClic
                     if (dummyImageId > 0) {
                         AppPreferences.setInt(userId + "_dummy_image_id", dummyImageId);
                     }
-                    startActivity(new Intent(this, ContactsActivity.class));
+                    startActivity(new Intent(this, ActivityContacts.class));
                     finish();
                 }
                 break;

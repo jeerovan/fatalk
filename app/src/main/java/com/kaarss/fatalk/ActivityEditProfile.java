@@ -3,7 +3,7 @@ package com.kaarss.fatalk;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = EditProfileActivity.class.getCanonicalName();
+public class ActivityEditProfile extends ActivityBase implements View.OnClickListener {
+    private static final String TAG = ActivityEditProfile.class.getCanonicalName();
 
     TextView _country;
     TextView _username;
@@ -45,6 +45,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.initialize(true,App.READ_WRITE_PERMISSIONS);
         setContentView(R.layout.activity_edit_profile);
 
         _country = findViewById(R.id.country);
@@ -86,30 +87,25 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         super.onStart();
         Request.getS3ParamsForDp();
         _bio.setText(AppPreferences.getString(Keys.userBio,""));
-        EventBus.getDefault().register(this);
     }
-    @Override
-    protected void onStop(){
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.change_bio:
-                startActivity(new Intent(this,EditBioActivity.class));
+                startActivity(new Intent(this, ActivityEditBio.class));
                 break;
             case R.id.security:
                 AppPreferences.setString(Keys.securityState,Keys.settingSecurity);
-                startActivity(new Intent(this,SecurityQuestionsActivity.class));
+                startActivity(new Intent(this, ActivitySecurityQuestions.class));
                 break;
             case R.id.password:
-                startActivity(new Intent(this,PasswordActivity.class));
+                startActivity(new Intent(this, ActivityPassword.class));
                 break;
             case R.id.logout:
                 App.clearDatabase();
                 AppPreferences.unsetUser();
-                startActivity(new Intent(this,SignInUpActivity.class));
+                startActivity(new Intent(this, ActivitySignInUp.class));
                 finish();
                 break;
             case R.id.profile_image:

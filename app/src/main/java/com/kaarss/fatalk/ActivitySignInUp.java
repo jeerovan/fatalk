@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -18,10 +18,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SignInUpActivity extends AppCompatActivity implements
+public class ActivitySignInUp extends AppCompatActivity implements
         View.OnClickListener{
 
-    private static final String TAG = SignInUpActivity.class.getSimpleName();
+    private static final String TAG = ActivitySignInUp.class.getSimpleName();
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     private int PICK_COUNTRY_CODE = 101;
@@ -102,7 +102,7 @@ public class SignInUpActivity extends AppCompatActivity implements
             _signLink.setText("SignUp");
         }
         stateIsSignIn = !stateIsSignIn;
-        if(!stateIsSignIn)startActivityForResult(new Intent(this, CountryCodeActivity.class), PICK_COUNTRY_CODE);
+        if(!stateIsSignIn)startActivityForResult(new Intent(this, ActivityCountryCode.class), PICK_COUNTRY_CODE);
     }
 
     private boolean checkUsernamePassword(){
@@ -144,7 +144,7 @@ public class SignInUpActivity extends AppCompatActivity implements
                 handleSubmit();
                 break;
             case R.id.country:
-                startActivityForResult(new Intent(this, CountryCodeActivity.class), PICK_COUNTRY_CODE);
+                startActivityForResult(new Intent(this, ActivityCountryCode.class), PICK_COUNTRY_CODE);
                 break;
             case R.id.forgot:
                 if(_username.getText().toString().isEmpty()){
@@ -152,7 +152,7 @@ public class SignInUpActivity extends AppCompatActivity implements
                 } else {
                     AppPreferences.setString(Keys.userName,_username.getText().toString());
                     AppPreferences.setString(Keys.securityState,Keys.verifyingSecurity);
-                    startActivity(new Intent(this,SecurityQuestionsActivity.class));
+                    startActivity(new Intent(this, ActivitySecurityQuestions.class));
                     finish();
                 }
                 break;
@@ -180,7 +180,7 @@ public class SignInUpActivity extends AppCompatActivity implements
                 if(rsOne == 1){
                     AppPreferences.setString(Keys.userName,_username.getText().toString());
                     AppPreferences.setString(Keys.country, countryName);
-                    startActivity(new Intent(this,SecurityQuestionsActivity.class));
+                    startActivity(new Intent(this, ActivitySecurityQuestions.class));
                     finish();
                 }
                 else if(rsOne == 0){
@@ -199,11 +199,11 @@ public class SignInUpActivity extends AppCompatActivity implements
                 if(rsTwo == 1){
                     int userState = message.getInt(Keys.userState);
                     if(userState == 1){
-                        startActivity(new Intent(this,SecurityQuestionsActivity.class));
+                        startActivity(new Intent(this, ActivitySecurityQuestions.class));
                     } else if(userState == 2){
-                        startActivity(new Intent(this,SetProfileActivity.class));
+                        startActivity(new Intent(this, ActivitySetProfile.class));
                     } else {
-                        startActivity(new Intent(this, ContactsActivity.class));
+                        startActivity(new Intent(this, ActivityContacts.class));
                     }
                     finish();
                 } else if(rsTwo == 0){

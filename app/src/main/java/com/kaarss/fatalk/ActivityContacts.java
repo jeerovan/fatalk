@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,9 +20,9 @@ import org.json.JSONObject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ContactsActivity extends AppCompatActivity implements View.OnClickListener{
+public class ActivityContacts extends AppCompatActivity implements View.OnClickListener{
 
-    private static final String TAG = ContactsActivity.class.getSimpleName();
+    private static final String TAG = ActivityContacts.class.getSimpleName();
 
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -32,7 +32,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     TextView _userBio;
 
     public static View.OnClickListener listItemClickListener;
-    private ContactsAdapter contactsAdapter;
+    private AdapterContacts adapterContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,20 +44,18 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         _userName = findViewById(R.id.user);
         _userBio = findViewById(R.id.bio);
 
-        _userName.setText(AppPreferences.getString(Keys.userName,""));
-
         _profileImage.setOnClickListener(this);
         _userDetail.setOnClickListener(this);
 
-        listItemClickListener = new ContactsActivity.ListItemClickListener();
+        listItemClickListener = new ActivityContacts.ListItemClickListener();
         final RecyclerView recyclerView = findViewById(R.id.contacts);
-        contactsAdapter = new ContactsAdapter(this);
+        adapterContacts = new AdapterContacts(this);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(contactsAdapter);
+        recyclerView.setAdapter(adapterContacts);
         recyclerView.setItemAnimator(null);
-        App.chatMessageDao.getChatProfiles().observe(this,(profiles) -> {
-            contactsAdapter.setUsers(profiles);
+        App.daoChatMessage.getChatProfiles().observe(this,(profiles) -> {
+            adapterContacts.setUsers(profiles);
         });
     }
     @Override
@@ -70,6 +68,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         super.onResume();
         // Setting Here, As These Might Have Changed
         String userId = AppPreferences.getString(Keys.userId,"");
+        _userName.setText(AppPreferences.getString(Keys.userName,""));
         _profileImage.setImageBitmap(App.getUserImage(userId, AppPreferences.getInt(Keys.userGender,0)));
         _userBio.setText(AppPreferences.getString(Keys.userBio,""));
     }
@@ -92,12 +91,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.user_detail:
             case R.id.profile_image:
-                startActivity(new Intent(this,EditProfileActivity.class));
+                startActivity(new Intent(this, ActivityEditProfile.class));
                 break;
         }
     }
     private void showProfile(String userId){
-        Intent profileIntent = new Intent(App.applicationContext,ViewProfileActivity.class);
+        Intent profileIntent = new Intent(App.applicationContext, ActivityViewProfile.class);
         profileIntent.putExtra(Keys.userId,userId);
         startActivity(profileIntent);
     }
@@ -113,7 +112,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     break;
                 case R.id.user_detail:
                     AppLog.d(TAG,"Clicked -> "+userId+"|"+userName);
-                    Intent intent = new Intent(App.applicationContext, ChatActivity.class);
+                    Intent intent = new Intent(App.applicationContext, ActivityChat.class);
                     intent.putExtra(Keys.userId,userId);
                     intent.putExtra(Keys.userName,userName);
                     startActivity(intent);
@@ -128,7 +127,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             if (event.downloadId.equals(userId)) {
                 _profileImage.setImageBitmap(App.getUserImage(userId, AppPreferences.getInt(Keys.userGender, 0)));
             } else {
-                contactsAdapter.updateImage(event.downloadId);
+                adapterContacts.updateImage(event.downloadId);
             }
         }
     }
